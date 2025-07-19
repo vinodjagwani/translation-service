@@ -1,0 +1,60 @@
+spring:
+  application:
+    name: ${SPRING_APPLICATION_NAME:translation-service}
+  webflux:
+    basePath: /translation-service
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    discovery:
+      enabled: false
+  elasticsearch:
+    uris: http://elasticsearch:9200
+    reactive:
+      enabled: true
+
+management:
+  server:
+    port: 9081
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info, prometheus, beans
+      path-mapping:
+        health: probes
+  endpoint:
+    health:
+      show-details: always
+      group:
+        core:
+          include: ping
+
+logging:
+  level:
+    se:
+      digitaltolk:
+        translation: TRACE
+
+server:
+  port: 8086
+  servlet:
+    contextPath: /translation-service
+
+logbook:
+  include:
+    - ${server.servlet.context-path}/api/**
+  exclude:
+    - /swagger-ui/**
+  filter.enabled: true
+  format.style: splunk
+  strategy: default
+  obfuscate:
+    parameters:
+      - access_token
+      - password
+      - token
+
+app:
+  jwtSecret: secret-key

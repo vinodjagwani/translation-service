@@ -1,0 +1,9 @@
+FROM eclipse-temurin:21.0.7_6-jdk-ubi9-minimal
+
+EXPOSE 9081
+EXPOSE 5005
+EXPOSE 8086
+
+COPY ./target/translation-service-1.0.0.jar /app.jar
+
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "-Djdk.tls.client.protocols=TLSv1.2", "/app.jar"]

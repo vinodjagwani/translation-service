@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+  <Properties>
+    <Property name="LOG_DIR">.</Property>
+  </Properties>
+  <CustomLevels>
+    <CustomLevel name="EVENT" intLevel="450"/>
+  </CustomLevels>
+  <Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%style{%d{ISO8601}}{red} %highlight{%-5level[translation-service,%X{traceId},%X{spanId}]}[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
+    </Console>
+    <RollingFile name="RollingFile" fileName="${LOG_DIR}/application.log"
+      filePattern="${LOG_DIR}/$${date:yyyy-MM}/application-%d{yyyy-MM-dd}.log.%i">
+      <PatternLayout
+        pattern="%style{%d{ISO8601}}{red} %highlight{%-5level[translation-service,%X{traceId},%X{spanId}]}[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="100MB"/>
+      </Policies>
+      <DefaultRolloverStrategy>
+        <Delete basePath="${LOG_DIR}" maxDepth="2">
+          <IfFileName glob="*/application-*.log"/>
+          <IfLastModified age="15d"/>
+        </Delete>
+      </DefaultRolloverStrategy>
+    </RollingFile>
+  </Appenders>
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="Console" level="INFO"/>
+      <AppenderRef ref="RollingFile" level="INFO"/>
+    </Root>
+    <Logger level="INFO" name="se.digitaltolk.translation" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+    <Logger level="TRACE" name="org.zalando.logbook" additivity="false">
+      <AppenderRef ref="Console"/>
+    </Logger>
+  </Loggers>
+</Configuration>
